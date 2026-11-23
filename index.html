@@ -1142,20 +1142,128 @@
         }
 
 
-        // Accessible Bengali text-to-speech using the browser's built-in Web Speech API.
-        // No API key, external service, or paid speech request is required.
+        // Speech engine: prefer server-side Google Chirp 3 HD Bengali voice.
+        // Browser speech is a fallback only when the serverless endpoint is not configured.
         let activeUtterance = null;
         let speechQueue = [];
         let speechActive = false;
+        let activeAudio = null;
+
+        const bengaliTermDictionary = {
+            'marketing':'মার্কেটিং','management':'ম্যানেজমেন্ট','accounting':'অ্যাকাউন্টিং',
+            'economics':'ইকোনমিক্স','business':'বিজনেস','finance':'ফাইন্যান্স',
+            'financial':'ফাইন্যান্সিয়াল','marketing mix':'মার্কেটিং মিক্স',
+            'market':'মার্কেট','customer':'কাস্টমার','consumer':'কনজিউমার',
+            'production':'প্রোডাকশন','product':'প্রোডাক্ট','promotion':'প্রমোশন',
+            'distribution':'ডিস্ট্রিবিউশন','entrepreneur':'এন্টারপ্রেনার',
+            'entrepreneurship':'এন্টারপ্রেনারশিপ','organization':'অর্গানাইজেশন',
+            'planning':'প্ল্যানিং','organizing':'অর্গানাইজিং','leadership':'লিডারশিপ',
+            'motivation':'মোটিভেশন','communication':'কমিউনিকেশন',
+            'economy':'ইকোনমি','demand':'ডিমান্ড','supply':'সাপ্লাই',
+            'capital':'ক্যাপিটাল','investment':'ইনভেস্টমেন্ট','profit':'প্রফিট',
+            'loss':'লস','revenue':'রেভিনিউ','cost':'কস্ট','assets':'অ্যাসেটস',
+            'liabilities':'লাইয়াবিলিটিজ','equity':'ইকুইটি','journal':'জার্নাল',
+            'ledger':'লেজার','balance sheet':'ব্যালেন্স শিট',
+            'income statement':'ইনকাম স্টেটমেন্ট','depreciation':'ডেপ্রিসিয়েশন',
+            'human resource':'হিউম্যান রিসোর্স','human resources':'হিউম্যান রিসোর্সেস',
+            'microeconomics':'মাইক্রোইকোনমিক্স','macroeconomics':'ম্যাক্রোইকোনমিক্স',
+            'account':'অ্যাকাউন্ট','accountant':'অ্যাকাউন্ট্যান্ট',
+            'principle':'প্রিন্সিপল','principles':'প্রিন্সিপলস',
+            'concept':'কনসেপ্ট','function':'ফাংশন','functions':'ফাংশনস',
+            'process':'প্রসেস','system':'সিস্টেম','method':'মেথড',
+            'theory':'থিওরি','analysis':'অ্যানালাইসিস','management process':'ম্যানেজমেন্ট প্রসেস'
+        };
+
+        function normalizeSpeechTerms(text) {
+            let result = text;
+            Object.keys(bengaliTermDictionary)
+                .sort((a, b) => b.length - a.length)
+                .forEach(term => {
+                    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    result = result.replace(new RegExp('\\b' + escaped + '\\b', 'gi'), bengaliTermDictionary[term]);
+                });
+            return result;
+        }
 
         function getSpeechText(item) {
             const tempDiv = document.createElement('div');
             tempDiv.innerHTML = item.answer;
             const answerText = (tempDiv.innerText || tempDiv.textContent || '').replace(/\\s+/g, ' ').trim();
-            return `${item.question}. উত্তর। ${answerText}`;
+            return normalizeSpeechTerms(`${item.question}. উত্তর। ${answerText}`);
         }
 
-        function splitSpeechText(text, maxLength = 220) {
+        function updateSpeechStatus(message, active = false) {
+            const status = document.getElementById('speechStatus');
+            const stopButton = document.getElementById('stopSpeechBtn');
+            if (status) {
+                status.textContent = message;
+                status.classList.toggle('text-indigo-600', active);
+                status.classList.toggle('dark:text-indigo-300', active);
+            }
+            if (stopButton) {
+                stopButton.classList.toggle('hidden', !active);
+                stopButton.classList.toggle('inline-flex', active);
+            }
+        }
+
+        async function speakAnswer(id) {
+            const item = studyData.find(question => question.id === id);
+            if (!item) return;
+            stopSpeech(false);
+            const text = getSpeechText(item);
+            speechActive = true;
+            updateSpeechStatus('উন্নত বাংলা ভয়েস তৈরি হচ্ছে…', true);
+
+            // Cloud Neural voice gives much better Bengali pronunciation than device TTS.
+            try {
+                const response = await fetch('/.netlify/functions/speak', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.audioContent && speechActive) {
+                        activeAudio = new Audio('data:audio/mp3;base64,' + data.audioContent);
+                        activeAudio.onended = () => {
+                            speechActive = false;
+                            activeAudio = null;
+                            updateSpeechStatus('ভয়েস পাঠ সম্পন্ন');
+                        };
+                        activeAudio.onerror = () => {
+                            speechActive = false;
+                            updateSpeechStatus('অডিও চালানো যায়নি');
+                            showToast('অডিও চালানো যায়নি। আবার চেষ্টা করুন।');
+                        };
+                        await activeAudio.play();
+                        updateSpeechStatus('ন্যাচারাল বাংলা ভয়েসে পড়া হচ্ছে', true);
+                        return;
+                    }
+                }
+            } catch (error) {
+                // Static GitHub Pages hosting has no Netlify Function; use device fallback below.
+            }
+
+            if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+                speechActive = false;
+                updateSpeechStatus('বাংলা ভয়েস পাওয়া যায়নি');
+                showToast('এই ব্রাউজারে বাংলা ভয়েস সমর্থিত নয়।');
+                return;
+            }
+            const voices = window.speechSynthesis.getVoices();
+            const bengaliVoice = voices.find(voice => /^bn([-_]|$)/i.test(voice.lang));
+            if (!bengaliVoice) {
+                speechActive = false;
+                updateSpeechStatus('বাংলা ভয়েস ইনস্টল নেই');
+                showToast('ফোনে Bengali Text-to-Speech voice ইনস্টল করুন, অথবা Cloud voice চালু করুন।');
+                return;
+            }
+            speechQueue = splitSpeechText(text);
+            updateSpeechStatus('ডিভাইসের বাংলা ভয়েসে পড়া হচ্ছে', true);
+            speakNextChunk(bengaliVoice);
+        }
+
+        function splitSpeechText(text, maxLength = 180) {
             const sentences = text.match(/[^।.!?]+[।.!?]?/g) || [text];
             const chunks = [];
             let current = '';
@@ -1173,63 +1281,26 @@
             return chunks;
         }
 
-        function updateSpeechStatus(message, active = false) {
-            const status = document.getElementById('speechStatus');
-            const stopButton = document.getElementById('stopSpeechBtn');
-            if (status) {
-                status.textContent = message;
-                status.classList.toggle('text-indigo-600', active);
-                status.classList.toggle('dark:text-indigo-300', active);
-            }
-            if (stopButton) {
-                stopButton.classList.toggle('hidden', !active);
-                stopButton.classList.toggle('inline-flex', active);
-            }
-        }
-
-        function speakAnswer(id) {
-            if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
-                showToast('আপনার ব্রাউজারে ভয়েস সুবিধা সমর্থিত নয়');
-                return;
-            }
-            const item = studyData.find(question => question.id === id);
-            if (!item) return;
-
-            stopSpeech(false);
-            speechQueue = splitSpeechText(getSpeechText(item));
-            speechActive = true;
-            updateSpeechStatus('পড়া হচ্ছে: ' + item.qNo, true);
-            speakNextChunk();
-        }
-
-        function speakNextChunk() {
+        function speakNextChunk(voice) {
             if (!speechActive || speechQueue.length === 0) {
                 speechActive = false;
                 activeUtterance = null;
                 updateSpeechStatus('ভয়েস পাঠ সম্পন্ন');
                 return;
             }
-
-            const chunk = speechQueue.shift();
-            const utterance = new SpeechSynthesisUtterance(chunk);
-            utterance.lang = 'bn-BD';
-            utterance.rate = 0.92;
+            const utterance = new SpeechSynthesisUtterance(speechQueue.shift());
+            utterance.voice = voice;
+            utterance.lang = voice.lang;
+            utterance.rate = 0.88;
             utterance.pitch = 1;
             utterance.volume = 1;
-
-            const voices = window.speechSynthesis.getVoices();
-            const bengaliVoice = voices.find(voice => /^bn([-_]|$)/i.test(voice.lang));
-            if (bengaliVoice) utterance.voice = bengaliVoice;
-
-            utterance.onend = () => {
-                if (speechActive) speakNextChunk();
-            };
+            utterance.onend = () => { if (speechActive) speakNextChunk(voice); };
             utterance.onerror = event => {
                 if (event.error !== 'canceled' && event.error !== 'interrupted') {
                     speechActive = false;
                     speechQueue = [];
                     updateSpeechStatus('ভয়েস চালানো যায়নি');
-                    showToast('ভয়েস চালাতে সমস্যা হয়েছে। ফোনের Bengali TTS voice পরীক্ষা করুন।');
+                    showToast('ভয়েস চালাতে সমস্যা হয়েছে।');
                 }
             };
             activeUtterance = utterance;
@@ -1238,6 +1309,11 @@
 
         function stopSpeech(showMessage = true) {
             if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            if (activeAudio) {
+                activeAudio.pause();
+                activeAudio.currentTime = 0;
+                activeAudio = null;
+            }
             speechQueue = [];
             speechActive = false;
             activeUtterance = null;
@@ -1245,10 +1321,7 @@
         }
 
         if ('speechSynthesis' in window) {
-            window.speechSynthesis.onvoiceschanged = () => {
-                // Refresh the browser voice list when Android or desktop voices finish loading.
-                window.speechSynthesis.getVoices();
-            };
+            window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
         }
 
         // Copy Question & Answer to Clipboard (Safe fallback for iFrames)
