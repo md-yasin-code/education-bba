@@ -98,8 +98,12 @@
                 </div>
             </div>
 
-            <!-- Action Controls (Font Size, Dark Mode, Print) -->
-            <div class="flex items-center gap-2">
+            <!-- Action Controls (Speech, Font Size, Theme, Print) -->
+            <div class="flex items-center gap-2 flex-wrap justify-end">
+                <button id="stopSpeechBtn" onclick="stopSpeech()" class="hidden items-center gap-2 px-3 py-2 rounded-xl bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 text-sm font-semibold transition" title="ভয়েস বন্ধ করুন">
+                    <i class="fa-solid fa-stop"></i><span>বন্ধ</span>
+                </button>
+                <span id="speechStatus" class="hidden sm:inline text-xs text-slate-500 dark:text-slate-400" aria-live="polite">ভয়েস প্রস্তুত</span>
                 <!-- Font Size Controls -->
                 <div class="flex items-center bg-slate-100 dark:bg-slate-800 rounded-xl p-1 border border-slate-200 dark:border-slate-700" title="ফন্টের আকার পরিবর্তন করুন">
                     <button onclick="changeFontSize(-1)" class="px-2.5 py-1 text-xs font-bold rounded-lg hover:bg-white dark:hover:bg-slate-700 transition" aria-label="ফন্ট ছোট করুন">A-</button>
@@ -1054,9 +1058,14 @@
                                     <span>${isCompleted ? 'সম্পন্ন হয়েছে' : 'পড়া শেষ হলে টিক দিন'}</span>
                                 </button>
 
-                                <button onclick="copyAnswer('${item.id}')" class="text-xs text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium flex items-center gap-1">
-                                    <i class="fa-regular fa-copy"></i> কপি করুন
-                                </button>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="speakAnswer('${item.id}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition" title="প্রশ্ন ও উত্তর শুনুন">
+                                        <i class="fa-solid fa-volume-high"></i><span>শুনুন</span>
+                                    </button>
+                                    <button onclick="copyAnswer('${item.id}')" class="text-xs text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium flex items-center gap-1">
+                                        <i class="fa-regular fa-copy"></i> কপি
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </article>
@@ -1130,6 +1139,116 @@
             
             document.getElementById('progressText').innerText = `${toBn(done)} / ${toBn(total)}টি সম্পন্ন (${toBn(percent)}%)`;
             document.getElementById('progressBar').style.width = `${percent}%`;
+        }
+
+
+        // Accessible Bengali text-to-speech using the browser's built-in Web Speech API.
+        // No API key, external service, or paid speech request is required.
+        let activeUtterance = null;
+        let speechQueue = [];
+        let speechActive = false;
+
+        function getSpeechText(item) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = item.answer;
+            const answerText = (tempDiv.innerText || tempDiv.textContent || '').replace(/\\s+/g, ' ').trim();
+            return `${item.question}. উত্তর। ${answerText}`;
+        }
+
+        function splitSpeechText(text, maxLength = 220) {
+            const sentences = text.match(/[^।.!?]+[।.!?]?/g) || [text];
+            const chunks = [];
+            let current = '';
+            sentences.forEach(sentence => {
+                const part = sentence.trim();
+                if (!part) return;
+                if ((current + ' ' + part).trim().length > maxLength && current) {
+                    chunks.push(current.trim());
+                    current = part;
+                } else {
+                    current = (current + ' ' + part).trim();
+                }
+            });
+            if (current) chunks.push(current);
+            return chunks;
+        }
+
+        function updateSpeechStatus(message, active = false) {
+            const status = document.getElementById('speechStatus');
+            const stopButton = document.getElementById('stopSpeechBtn');
+            if (status) {
+                status.textContent = message;
+                status.classList.toggle('text-indigo-600', active);
+                status.classList.toggle('dark:text-indigo-300', active);
+            }
+            if (stopButton) {
+                stopButton.classList.toggle('hidden', !active);
+                stopButton.classList.toggle('inline-flex', active);
+            }
+        }
+
+        function speakAnswer(id) {
+            if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+                showToast('আপনার ব্রাউজারে ভয়েস সুবিধা সমর্থিত নয়');
+                return;
+            }
+            const item = studyData.find(question => question.id === id);
+            if (!item) return;
+
+            stopSpeech(false);
+            speechQueue = splitSpeechText(getSpeechText(item));
+            speechActive = true;
+            updateSpeechStatus('পড়া হচ্ছে: ' + item.qNo, true);
+            speakNextChunk();
+        }
+
+        function speakNextChunk() {
+            if (!speechActive || speechQueue.length === 0) {
+                speechActive = false;
+                activeUtterance = null;
+                updateSpeechStatus('ভয়েস পাঠ সম্পন্ন');
+                return;
+            }
+
+            const chunk = speechQueue.shift();
+            const utterance = new SpeechSynthesisUtterance(chunk);
+            utterance.lang = 'bn-BD';
+            utterance.rate = 0.92;
+            utterance.pitch = 1;
+            utterance.volume = 1;
+
+            const voices = window.speechSynthesis.getVoices();
+            const bengaliVoice = voices.find(voice => /^bn([-_]|$)/i.test(voice.lang));
+            if (bengaliVoice) utterance.voice = bengaliVoice;
+
+            utterance.onend = () => {
+                if (speechActive) speakNextChunk();
+            };
+            utterance.onerror = event => {
+                if (event.error !== 'canceled' && event.error !== 'interrupted') {
+                    speechActive = false;
+                    speechQueue = [];
+                    updateSpeechStatus('ভয়েস চালানো যায়নি');
+                    showToast('ভয়েস চালাতে সমস্যা হয়েছে। ফোনের Bengali TTS voice পরীক্ষা করুন।');
+                }
+            };
+            activeUtterance = utterance;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function stopSpeech(showMessage = true) {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            speechQueue = [];
+            speechActive = false;
+            activeUtterance = null;
+            updateSpeechStatus(showMessage ? 'ভয়েস বন্ধ করা হয়েছে' : 'ভয়েস প্রস্তুত');
+        }
+
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.onvoiceschanged = () => {
+                // Refresh the browser voice list when Android or desktop voices finish loading.
+                window.speechSynthesis.getVoices();
+            };
         }
 
         // Copy Question & Answer to Clipboard (Safe fallback for iFrames)
