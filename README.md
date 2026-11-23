@@ -7,23 +7,34 @@ A responsive Bengali study portal containing question-and-answer notes for the f
 - Search questions and answers, filter by subject, and bookmark important topics.
 - Track completed questions locally in the browser.
 - Light/dark theme, adjustable text size, copy and print/PDF.
-- **Bengali text-to-speech:** each answer includes a Listen button. Speech uses the browser's built-in Web Speech API; no API key or paid server is required.
-- Responsive layout for mobile and desktop.
+- Bengali text-to-speech with a server-side Google Cloud Chirp 3 HD neural voice when deployed on Netlify.
+- Browser Bengali TTS fallback only when a Bengali voice is installed; the app no longer silently selects an English voice.
+- BBA terminology pronunciation normalization for common English terms inside Bengali answers.
 
-## Voice support
+## Premium Bengali voice setup (Netlify)
 
-Tap **শুনুন** under an answer to hear its question and answer. The voice language is set to Bengali (Bangladesh), and the browser selects an installed Bengali voice when available. Actual voice quality and availability depend on the device/browser and its installed text-to-speech engine. On Android, install or update a Bengali voice in the system Text-to-speech settings if speech is unavailable. Use **বন্ধ** to stop playback.
+The neural voice endpoint is included at `netlify/functions/speak.js`. It uses Google Cloud Text-to-Speech's Bengali (India) Chirp 3 HD voice `bn-IN-Chirp3-HD-Aoede`.
 
-This is browser/device text-to-speech, not a cloud AI voice-cloning service. The site does not send study content to a speech API.
+1. Create or select a Google Cloud project.
+2. Enable the **Cloud Text-to-Speech API** and configure billing according to Google's current pricing.
+3. Create an API key in Google Cloud Credentials. Restrict it to the Cloud Text-to-Speech API.
+4. Deploy this repository to Netlify (the included `netlify.toml` configures the static publish directory and Functions folder).
+5. In Netlify: **Site configuration → Environment variables**, add `GOOGLE_TTS_API_KEY` with the API key value, then trigger a new deploy.
+6. Open the Netlify-hosted site and tap **শুনুন**. The site calls the Netlify Function; the secret key stays on the server and is never exposed in frontend code.
+
+**Important:** GitHub Pages is static hosting and cannot run Netlify Functions. The browser-only fallback requires a Bengali voice installed on the device. The neural voice works only on the Netlify deployment after the API is enabled and the environment variable is configured.
+
+Google's Chirp 3 HD voice currently lists Bengali (India), not Bengali (Bangladesh). It is a premium neural voice and may sound more natural than local device TTS, but accent and pronunciation should be tested against the actual course content.
 
 ## Run locally
 
-Open `index.html` in a modern browser, or serve this folder with any static web server.
+Open `index.html` in a modern browser for the browser fallback. To test the cloud function, deploy to Netlify and configure the environment variable above.
 
 ## Deploy
 
-The included GitHub Actions workflow publishes the repository root to GitHub Pages on every push to `main`. In the repository, open **Settings → Pages** and select **GitHub Actions** as the build and deployment source if it is not already selected.
+- **GitHub Pages:** the included GitHub Actions workflow publishes the static site to Pages on every push to `main`. In **Settings → Pages**, select **GitHub Actions** as the deployment source.
+- **Netlify:** import this repository into Netlify; the included `netlify.toml` configures publishing and serverless functions.
 
-## Privacy
+## Privacy and security
 
-Study completion, bookmarks, and theme preferences are stored in the browser's local storage on the current device.
+The Google API key is read only from the Netlify server environment and must never be committed to the repository. Study completion, bookmarks, and theme preferences are stored in the browser's local storage on the current device. Text sent to the neural voice endpoint is processed by Google Cloud Text-to-Speech to generate audio.
