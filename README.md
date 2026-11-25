@@ -16,6 +16,18 @@ A responsive Bengali study portal containing question-and-answer notes for the f
 - Browser Bengali TTS fallback only when a Bengali voice is installed; the app no longer silently selects an English voice.
 - BBA terminology pronunciation normalization for common English terms inside Bengali answers.
 
+## Exam preparation tools
+
+- Timed MCQ mock tests with 10, 20 or 30-question settings.
+- Subject filters for Marketing, Management, History, ICT and Business Introduction.
+- Instant answer feedback in the final report, explanations for incorrect and unanswered questions, and printable results.
+- Local exam history, best-score snapshot, completed-topic and bookmark statistics.
+- Exam history and learning progress remain in the current browser profile; they are not synced between devices.
+
+## Quality checks
+
+GitHub Actions runs `node scripts/check-inline-js.mjs` before publishing. This parses every inline JavaScript block in `index.html` to catch syntax errors.
+
 ## Premium Bengali voice setup (Netlify)
 
 The neural voice endpoint is included at `netlify/functions/speak.js`. It uses Google Cloud Text-to-Speech's Bengali (India) Chirp 3 HD voice `bn-IN-Chirp3-HD-Aoede`.
