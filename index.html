@@ -40,6 +40,10 @@
 
     <style>
 
+
+        .quiz-option:focus-visible { outline:3px solid rgba(99,102,241,.45);outline-offset:2px; }
+        #examCentre select { color:inherit; }
+        @media print { #examCentre,#quizWorkspace,#examHistory,.no-print { display:none !important; } #examResult { display:block !important; } }
         body { background-image: radial-gradient(ellipse at 8% 0%,rgba(99,102,241,.08),transparent 32%),radial-gradient(ellipse at 95% 18%,rgba(14,165,233,.07),transparent 28%); }
         .dark body { background-image: radial-gradient(ellipse at 8% 0%,rgba(99,102,241,.13),transparent 32%),radial-gradient(ellipse at 95% 18%,rgba(14,165,233,.08),transparent 28%); }
         .hero-panel { background:linear-gradient(118deg,#312e81 0%,#4338ca 48%,#0369a1 100%); box-shadow:0 24px 60px rgba(49,46,129,.2); }
@@ -161,6 +165,41 @@
         </section>
 
         
+
+        <!-- Smart Learning & Exam Centre -->
+        <section id="examCentre" class="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-4 no-print">
+            <div class="lg:col-span-2 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 sm:p-6 shadow-sm">
+                <div class="flex flex-wrap justify-between items-start gap-3">
+                    <div><span class="text-xs font-bold tracking-wider text-indigo-600 dark:text-indigo-300">SMART EXAM CENTRE</span><h2 class="text-xl sm:text-2xl font-extrabold mt-1">নিজেকে যাচাই করো</h2><p class="text-sm text-slate-500 dark:text-slate-400 mt-1">সময় ধরে MCQ পরীক্ষা দাও, ফলাফল ও ভুল উত্তর বিশ্লেষণ করো।</p></div>
+                    <span class="rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-2 text-xs font-bold"><i class="fa-solid fa-stopwatch mr-1"></i> Timed Mock Test</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
+                    <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">বিষয়<select id="quizSubject" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm"><option value="all">সব বিষয়</option><option value="marketing">মার্কেটিং</option><option value="management">ব্যবস্থাপনা</option></select></label>
+                    <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">প্রশ্ন সংখ্যা<select id="quizCount" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm"><option value="10">১০টি প্রশ্ন</option><option value="20" selected>২০টি প্রশ্ন</option><option value="30">৩০টি প্রশ্ন</option></select></label>
+                    <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">সময়<select id="quizDuration" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm"><option value="10">১০ মিনিট</option><option value="15" selected>১৫ মিনিট</option><option value="25">২৫ মিনিট</option></select></label>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-4"><button onclick="startMockTest()" class="rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-3 text-sm font-bold transition"><i class="fa-solid fa-play mr-2"></i>পরীক্ষা শুরু করো</button><button onclick="showExamHistory()" class="rounded-xl border border-slate-200 dark:border-slate-600 px-4 py-3 text-sm font-semibold hover:bg-slate-50 dark:hover:bg-slate-700"><i class="fa-solid fa-clock-rotate-left mr-1"></i>ফলাফলের ইতিহাস</button></div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 dark:border-slate-700 bg-gradient-to-br from-slate-900 to-indigo-950 text-white p-5 shadow-sm">
+                <div class="text-xs text-indigo-200 font-bold tracking-wider">YOUR LEARNING SNAPSHOT</div><h3 class="font-bold text-lg mt-2">তোমার প্রস্তুতি</h3>
+                <div class="grid grid-cols-2 gap-3 mt-4"><div class="rounded-xl bg-white/10 p-3"><div class="text-2xl font-extrabold" id="statCompleted">০</div><div class="text-xs text-indigo-200">পড়া সম্পন্ন</div></div><div class="rounded-xl bg-white/10 p-3"><div class="text-2xl font-extrabold" id="statBookmarks">০</div><div class="text-xs text-indigo-200">বুকমার্ক</div></div><div class="rounded-xl bg-white/10 p-3"><div class="text-2xl font-extrabold" id="statExams">০</div><div class="text-xs text-indigo-200">মডেল টেস্ট</div></div><div class="rounded-xl bg-white/10 p-3"><div class="text-2xl font-extrabold" id="statBest">—</div><div class="text-xs text-indigo-200">সেরা স্কোর</div></div></div>
+                <p class="text-xs text-indigo-200 mt-4">এই তথ্য এই ডিভাইসের ব্রাউজারে সংরক্ষিত থাকবে।</p>
+            </div>
+        </section>
+        <section id="quizWorkspace" class="hidden mb-6 rounded-2xl border border-indigo-200 dark:border-indigo-800 bg-white dark:bg-slate-800 p-5 sm:p-7 shadow-lg no-print">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-700 pb-4">
+                <div><span class="text-xs text-indigo-600 dark:text-indigo-300 font-bold">MOCK EXAM IN PROGRESS</span><h2 class="font-extrabold text-xl mt-1" id="quizHeading">BBA Mock Test</h2></div>
+                <div class="flex gap-2"><span class="rounded-xl bg-slate-100 dark:bg-slate-700 px-3 py-2 text-sm font-bold" id="quizTimer">১৫:০০</span><button onclick="confirmFinishExam()" class="rounded-xl bg-rose-50 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300 px-3 py-2 text-sm font-bold">পরীক্ষা শেষ</button></div>
+            </div>
+            <div class="flex justify-between text-xs text-slate-500 dark:text-slate-400 mt-4"><span id="quizPosition">প্রশ্ন ১ / ২০</span><span id="quizAnswered">উত্তর: ০</span></div>
+            <div class="h-2 rounded-full bg-slate-100 dark:bg-slate-700 mt-2 overflow-hidden"><div id="quizProgress" class="h-full bg-indigo-600 rounded-full transition-all" style="width:0%"></div></div>
+            <div id="quizQuestionArea" class="py-6"></div>
+            <div class="flex justify-between gap-3"><button onclick="moveQuiz(-1)" id="quizPrev" class="rounded-xl border border-slate-200 dark:border-slate-600 px-4 py-2.5 text-sm font-semibold">আগের প্রশ্ন</button><button onclick="moveQuiz(1)" id="quizNext" class="rounded-xl bg-indigo-600 text-white px-5 py-2.5 text-sm font-bold">পরের প্রশ্ন <i class="fa-solid fa-arrow-right ml-1"></i></button></div>
+            <div id="quizNav" class="flex flex-wrap gap-2 mt-5 pt-4 border-t border-slate-100 dark:border-slate-700"></div>
+        </section>
+        <section id="examResult" class="hidden mb-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 sm:p-7 shadow-sm no-print"></section>
+        <section id="examHistory" class="hidden mb-6 rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 shadow-sm no-print"></section>
+
         <!-- Progress & Search Banner -->
         <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80 dark:border-slate-700/80 mb-6 no-print">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
@@ -1011,6 +1050,106 @@
 
         ];
 
+
+        // Curated Marketing & Management MCQ bank (answer index is zero-based).
+        const mcqBank = [
+          {s:'marketing',q:'বাজার বিভাজনের প্রধান উদ্দেশ্য কী?',o:['সব ক্রেতাকে একই পণ্য দেওয়া','সমজাতীয় ক্রেতাগোষ্ঠী চিহ্নিত করা','শুধু মূল্য কমানো','উৎপাদন বন্ধ করা'],a:1,e:'বাজার বিভাজনে মিল থাকা চাহিদা ও বৈশিষ্ট্যের ক্রেতাদের আলাদা গোষ্ঠীতে ভাগ করা হয়।'},
+          {s:'marketing',q:'নিচের কোনটি 4Ps-এর অন্তর্ভুক্ত নয়?',o:['Product','Price','People','Place'],a:2,e:'প্রচলিত 4Ps হলো Product, Price, Place ও Promotion।'},
+          {s:'marketing',q:'Marketing Mix-এর Promotion বলতে কী বোঝায়?',o:['পণ্য সংরক্ষণ','ক্রেতাকে অবহিত ও প্রভাবিত করা','কর্মী নিয়োগ','হিসাব নিরীক্ষা'],a:1,e:'Promotion-এর মধ্যে বিজ্ঞাপন, বিক্রয় প্রসার, জনসংযোগ ও ব্যক্তিক বিক্রয় থাকে।'},
+          {s:'marketing',q:'জনমিতিক বাজার বিভাজনের উদাহরণ কোনটি?',o:['জলবায়ু','ব্যক্তিত্ব','বয়স ও আয়','ব্যবহারের হার'],a:2,e:'বয়স, লিঙ্গ, আয়, পেশা ও শিক্ষা জনমিতিক ভিত্তি।'},
+          {s:'marketing',q:'বাজার গবেষণার প্রথম ধাপ কোনটি?',o:['ফলাফল প্রকাশ','সমস্যা ও উদ্দেশ্য নির্ধারণ','বিজ্ঞাপন প্রচার','পণ্য উৎপাদন'],a:1,e:'গবেষণার সমস্যা ও উদ্দেশ্য স্পষ্ট করা প্রথম ধাপ।'},
+          {s:'marketing',q:'প্রাথমিক তথ্যের উদাহরণ কোনটি?',o:['প্রকাশিত সরকারি প্রতিবেদন','পুরোনো বই','নিজস্ব জরিপে সংগৃহীত তথ্য','সংবাদপত্রের প্রতিবেদন'],a:2,e:'গবেষক নিজে জরিপ বা সাক্ষাৎকারের মাধ্যমে যে তথ্য সংগ্রহ করেন তা প্রাথমিক তথ্য।'},
+          {s:'marketing',q:'বিক্রয় ধারণা প্রধানত কোন বিষয়ে গুরুত্ব দেয়?',o:['ক্রেতার দীর্ঘমেয়াদি সম্পর্ক','বিক্রয় প্রচেষ্টা ও পণ্য বিক্রি','বাজার গবেষণা','পণ্য নকশা'],a:1,e:'বিক্রয় ধারণা বিদ্যমান পণ্য বিক্রি ও বিক্রয় বৃদ্ধিতে বেশি গুরুত্ব দেয়।'},
+          {s:'marketing',q:'বাজারজাতকরণের আধুনিক ধারণার কেন্দ্রবিন্দু কী?',o:['কারখানা','পণ্য মজুত','ক্রেতার প্রয়োজন ও সন্তুষ্টি','শুধু বিক্রেতা'],a:2,e:'আধুনিক বিপণন ক্রেতার প্রয়োজন পূরণ ও সম্পর্ক তৈরিকে কেন্দ্র করে।'},
+          {s:'marketing',q:'Place উপাদানের সঙ্গে কোনটি সম্পর্কিত?',o:['পরিবহন ও বণ্টন','বিজ্ঞাপন কপি','পণ্যের রং','কর্মীর বেতন'],a:0,e:'Place পণ্যকে সঠিক সময়ে ও স্থানে পৌঁছানোর বণ্টনব্যবস্থা।'},
+          {s:'marketing',q:'ব্র্যান্ড আনুগত্য বলতে কী বোঝায়?',o:['বারবার ব্র্যান্ড পরিবর্তন','একটি ব্র্যান্ডের প্রতি ধারাবাহিক পছন্দ','শুধু কম দাম দেখা','পণ্য ব্যবহার না করা'],a:1,e:'ব্র্যান্ড আনুগত্য হলো সন্তুষ্টির কারণে একই ব্র্যান্ড পুনরায় বেছে নেওয়ার প্রবণতা।'},
+          {s:'marketing',q:'মনস্তাত্ত্বিক বিভাজনের ভিত্তি কোনটি?',o:['দেশ','বয়স','জীবনধারা','জনসংখ্যা'],a:2,e:'জীবনধারা, ব্যক্তিত্ব ও মূল্যবোধ মনস্তাত্ত্বিক বিভাজনের ভিত্তি।'},
+          {s:'marketing',q:'মূল্য নির্ধারণে কোন বিষয়টি বিবেচ্য?',o:['ব্যয়, চাহিদা ও প্রতিযোগিতা','শুধু প্যাকেটের রং','শুধু কর্মীর সংখ্যা','শুধু অফিসের অবস্থান'],a:0,e:'মূল্য নির্ধারণে ব্যয়, ক্রেতার চাহিদা, ক্রয়ক্ষমতা ও প্রতিযোগিতা বিবেচিত হয়।'},
+          {s:'marketing',q:'বিক্রয় প্রসার (Sales Promotion)-এর উদাহরণ কোনটি?',o:['কুপন ও ছাড়','কারখানা স্থাপন','অডিট রিপোর্ট','কর্মী মূল্যায়ন'],a:0,e:'কুপন, নমুনা, প্রতিযোগিতা ও স্বল্পমেয়াদি ছাড় বিক্রয় প্রসারের কৌশল।'},
+          {s:'marketing',q:'সেবা বিপণনে সেবার একটি বৈশিষ্ট্য কোনটি?',o:['সেবা সবসময় স্পর্শযোগ্য','উৎপাদন ও ভোগ প্রায়ই একই সময়ে ঘটে','সেবা মজুত করা যায়','সেবার মান সবসময় অভিন্ন'],a:1,e:'সেবার অবিচ্ছেদ্যতার কারণে উৎপাদন ও ভোগ প্রায়ই একই সময়ে ঘটে।'},
+          {s:'marketing',q:'লক্ষ্যবাজার নির্বাচন কোন প্রক্রিয়ার অংশ?',o:['STP','FIFO','অবচয়','নিরীক্ষা'],a:0,e:'Segmentation, Targeting ও Positioning হলো STP প্রক্রিয়া।'},
+          {s:'management',q:'ব্যবস্থাপনার প্রথম মৌলিক কার্যাবলি কোনটি?',o:['নিয়ন্ত্রণ','পরিকল্পনা','নির্দেশনা','কর্মী ছাঁটাই'],a:1,e:'পরিকল্পনায় লক্ষ্য ও লক্ষ্য অর্জনের উপায় আগাম নির্ধারণ করা হয়।'},
+          {s:'management',q:'সংগঠন (Organizing)-এর মূল কাজ কী?',o:['দায়িত্ব ও কাজের কাঠামো নির্ধারণ','শুধু বিজ্ঞাপন','শুধু পণ্য বিক্রি','কর প্রদান'],a:0,e:'সংগঠনে কাজ ভাগ, দায়িত্ব-কর্তৃত্ব নির্ধারণ ও সম্পদের সমন্বয় করা হয়।'},
+          {s:'management',q:'Staffing বলতে কী বোঝায়?',o:['বাজার বিভাজন','কর্মী সংগ্রহ, নির্বাচন ও উন্নয়ন','মূল্য নির্ধারণ','পণ্য মোড়কীকরণ'],a:1,e:'Staffing হলো প্রয়োজনীয় কর্মী সংগ্রহ, নির্বাচন, নিয়োগ ও প্রশিক্ষণ।'},
+          {s:'management',q:'নেতৃত্বের প্রধান কাজ কী?',o:['কর্মীদের প্রভাবিত ও অনুপ্রাণিত করা','শুধু হিসাব লেখা','পণ্য পরিবহন','কর নির্ধারণ'],a:0,e:'নেতৃত্ব দলকে লক্ষ্য অর্জনে প্রভাবিত ও অনুপ্রাণিত করে।'},
+          {s:'management',q:'নিয়ন্ত্রণ প্রক্রিয়ার গুরুত্বপূর্ণ ধাপ কোনটি?',o:['মানদণ্ডের সঙ্গে বাস্তব ফল তুলনা','কর্মী নিয়োগ বিজ্ঞাপন','পণ্য নকশা','বাজার বিভাজন'],a:0,e:'বাস্তব কর্মসম্পাদনকে নির্ধারিত মানের সঙ্গে তুলনা করে বিচ্যুতি সংশোধন করা হয়।'},
+          {s:'management',q:'কর্তৃত্ব (Authority) কী?',o:['কাজের বাধ্যবাধকতা','সিদ্ধান্ত ও নির্দেশ দেওয়ার বৈধ ক্ষমতা','ব্যক্তিগত পছন্দ','শুধু দায়িত্ব এড়ানো'],a:1,e:'কর্তৃত্ব হলো পদ থেকে প্রাপ্ত সিদ্ধান্ত ও নির্দেশ দেওয়ার বৈধ ক্ষমতা।'},
+          {s:'management',q:'দায়িত্ব (Responsibility) বলতে কী বোঝায়?',o:['ক্ষমতা প্রয়োগ','অর্পিত কাজ সম্পন্ন করার বাধ্যবাধকতা','বেতন বৃদ্ধি','শুধু আদেশ দেওয়া'],a:1,e:'দায়িত্ব হলো অর্পিত কাজ যথাযথভাবে সম্পন্ন করার দায়।'},
+          {s:'management',q:'কার্যকর পরিকল্পনার বৈশিষ্ট্য কোনটি?',o:['অবাস্তব','অনমনীয়','সুস্পষ্ট ও বাস্তবসম্মত','লক্ষ্যহীন'],a:2,e:'কার্যকর পরিকল্পনা লক্ষ্যভিত্তিক, বাস্তবসম্মত, নমনীয় ও সুস্পষ্ট।'},
+          {s:'management',q:'প্রেরণা (Motivation) কী?',o:['কর্মীকে কাজের আগ্রহ ও উদ্দীপনা দেওয়া','কাজ বন্ধ করা','শুধু নিয়ন্ত্রণ','পণ্য মজুত'],a:0,e:'প্রেরণা কর্মীদের লক্ষ্য অর্জনের জন্য কাজ করতে উৎসাহিত করে।'},
+          {s:'management',q:'কেন্দ্রীকরণ (Centralization) বলতে কী বোঝায়?',o:['সিদ্ধান্ত ক্ষমতা নিম্নস্তরে ছড়িয়ে দেওয়া','সিদ্ধান্ত ক্ষমতা উচ্চস্তরে কেন্দ্রীভূত রাখা','কাজ বিলুপ্ত করা','বাজার ভাগ করা'],a:1,e:'কেন্দ্রীকরণে গুরুত্বপূর্ণ সিদ্ধান্ত গ্রহণের ক্ষমতা উচ্চ ব্যবস্থাপনায় কেন্দ্রীভূত থাকে।'},
+          {s:'management',q:'নিয়ন্ত্রণের সঙ্গে কোনটি সবচেয়ে বেশি সম্পর্কিত?',o:['প্রতিক্রিয়া ও সংশোধন','শুধু নিয়োগ','শুধু বিজ্ঞাপন','শুধু প্যাকেজিং'],a:0,e:'নিয়ন্ত্রণে ফলাফল পরিমাপ, বিচ্যুতি শনাক্ত ও সংশোধনমূলক ব্যবস্থা নেওয়া হয়।'},
+          {s:'management',q:'কর্মীদের মধ্যে তথ্য আদান-প্রদানের প্রক্রিয়া কী?',o:['যোগাযোগ','বিভাজন','অবচয়','বণ্টন'],a:0,e:'যোগাযোগের মাধ্যমে তথ্য, নির্দেশ ও মতামত আদান-প্রদান হয়।'},
+          {s:'management',q:'গণতান্ত্রিক নেতৃত্বে সাধারণত কী হয়?',o:['কর্মীদের মতামত ও অংশগ্রহণকে গুরুত্ব দেওয়া','সব সিদ্ধান্ত গোপন রাখা','কোনো যোগাযোগ না রাখা','শুধু শাস্তি দেওয়া'],a:0,e:'গণতান্ত্রিক নেতা সিদ্ধান্তে দলের মতামত ও অংশগ্রহণকে গুরুত্ব দেন।'},
+          {s:'management',q:'ব্যবস্থাপনার দক্ষতা (Efficiency) বলতে কী বোঝায়?',o:['সম্পদের অপচয় বাড়ানো','কম সম্পদে যথাযথভাবে কাজ সম্পন্ন করা','লক্ষ্য বাদ দেওয়া','কাজ বিলম্বিত করা'],a:1,e:'Efficiency হলো সম্পদের অপচয় কমিয়ে কাজ করা; effectiveness হলো সঠিক লক্ষ্য অর্জন।'},
+          {s:'management',q:'কর্তৃত্ব অর্পণ (Delegation)-এর অর্থ কী?',o:['কাজ ও প্রয়োজনীয় ক্ষমতা অধস্তনকে দেওয়া','সব কাজ নিজে করা','দায়িত্ব অস্বীকার','প্রতিষ্ঠান বন্ধ করা'],a:0,e:'Delegation-এ অধস্তনকে নির্দিষ্ট কাজ ও তা সম্পাদনের প্রয়োজনীয় কর্তৃত্ব দেওয়া হয়।'},
+          {s:'management',q:'সমন্বয় (Coordination) কেন প্রয়োজন?',o:['বিভাগগুলোর কাজের সামঞ্জস্য আনতে','বিভাগের মধ্যে দ্বন্দ্ব বাড়াতে','তথ্য গোপন করতে','লক্ষ্য বাদ দিতে'],a:0,e:'সমন্বয় বিভিন্ন ব্যক্তি ও বিভাগের প্রচেষ্টাকে অভিন্ন লক্ষ্যের দিকে পরিচালিত করে।'}
+        ];
+        let quizQuestions=[], quizAnswers={}, quizIndex=0, quizSeconds=0, quizClock=null, quizStartedAt=null;
+        const examHistory = JSON.parse(localStorage.getItem('bba_exam_history') || '[]');
+        const bnNum = n => String(n).replace(/\d/g,d=>'০১২৩৪৫৬৭৮৯'[d]);
+        function updateLearningStats(){
+          const history=JSON.parse(localStorage.getItem('bba_exam_history')||'[]');
+          const best=history.reduce((m,x)=>Math.max(m,x.percent||0),0);
+          document.getElementById('statCompleted').textContent=bnNum(completedIds.length);
+          document.getElementById('statBookmarks').textContent=bnNum(bookmarkedIds.length);
+          document.getElementById('statExams').textContent=bnNum(history.length);
+          document.getElementById('statBest').textContent=history.length?bnNum(best)+'%':'—';
+        }
+        function startMockTest(){
+          const subject=document.getElementById('quizSubject').value;
+          const count=Number(document.getElementById('quizCount').value);
+          const duration=Number(document.getElementById('quizDuration').value);
+          const pool=mcqBank.filter(x=>subject==='all'||x.s===subject);
+          if(!pool.length){showToast('এই বিষয়ের প্রশ্ন এখনো যোগ করা হয়নি');return;}
+          quizQuestions=[...pool].sort(()=>Math.random()-.5).slice(0,Math.min(count,pool.length));
+          quizAnswers={};quizIndex=0;quizSeconds=duration*60;quizStartedAt=Date.now();
+          document.getElementById('examResult').classList.add('hidden');
+          document.getElementById('examHistory').classList.add('hidden');
+          document.getElementById('quizWorkspace').classList.remove('hidden');
+          document.getElementById('quizHeading').textContent=(subject==='all'?'BBA Combined':'বিষয়ভিত্তিক')+' Mock Test';
+          renderQuizQuestion();clearInterval(quizClock);updateQuizTimer();
+          quizClock=setInterval(()=>{quizSeconds--;updateQuizTimer();if(quizSeconds<=0)finishMockTest(true);},1000);
+          document.getElementById('quizWorkspace').scrollIntoView({behavior:'smooth',block:'start'});
+        }
+        function updateQuizTimer(){
+          const m=Math.floor(Math.max(0,quizSeconds)/60),sec=Math.max(0,quizSeconds)%60;
+          document.getElementById('quizTimer').textContent=bnNum(String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0'));
+          document.getElementById('quizTimer').classList.toggle('text-rose-600',quizSeconds<60);
+        }
+        function renderQuizQuestion(){
+          const q=quizQuestions[quizIndex];if(!q)return;
+          const chosen=quizAnswers[quizIndex];
+          document.getElementById('quizPosition').textContent='প্রশ্ন '+bnNum(quizIndex+1)+' / '+bnNum(quizQuestions.length);
+          document.getElementById('quizAnswered').textContent='উত্তর: '+bnNum(Object.keys(quizAnswers).length);
+          document.getElementById('quizProgress').style.width=((quizIndex+1)/quizQuestions.length*100)+'%';
+          document.getElementById('quizQuestionArea').innerHTML='<div class="text-xs font-bold text-indigo-600 dark:text-indigo-300 mb-2">'+(q.s==='marketing'?'MARKETING':'MANAGEMENT')+'</div><h3 class="text-lg sm:text-xl font-bold leading-relaxed mb-5">'+(quizIndex+1)+'. '+q.q+'</h3><div class="grid gap-3">'+q.o.map((o,i)=>'<button onclick="chooseQuizAnswer('+i+')" class="quiz-option text-left p-4 rounded-xl border '+(chosen===i?'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/40':'border-slate-200 dark:border-slate-600 hover:border-indigo-300')+' transition"><span class="inline-flex w-7 h-7 rounded-lg items-center justify-center mr-2 text-xs font-bold '+(chosen===i?'bg-indigo-600 text-white':'bg-slate-100 dark:bg-slate-700')+'">'+String.fromCharCode(65+i)+'</span>'+o+'</button>').join('')+'</div>';
+          document.getElementById('quizPrev').disabled=quizIndex===0;
+          document.getElementById('quizPrev').classList.toggle('opacity-40',quizIndex===0);
+          document.getElementById('quizNext').innerHTML=quizIndex===quizQuestions.length-1?'পরীক্ষা জমা দাও <i class="fa-solid fa-check ml-1"></i>':'পরের প্রশ্ন <i class="fa-solid fa-arrow-right ml-1"></i>';
+          document.getElementById('quizNav').innerHTML=quizQuestions.map((_,i)=>'<button onclick="jumpQuiz('+i+')" class="w-8 h-8 rounded-lg text-xs font-bold '+(i===quizIndex?'bg-indigo-600 text-white':quizAnswers[i]!==undefined?'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300':'bg-slate-100 dark:bg-slate-700')+'">'+bnNum(i+1)+'</button>').join('');
+        }
+        function chooseQuizAnswer(i){quizAnswers[quizIndex]=i;renderQuizQuestion();}
+        function moveQuiz(step){if(quizIndex===quizQuestions.length-1&&step>0){confirmFinishExam();return;}quizIndex=Math.max(0,Math.min(quizQuestions.length-1,quizIndex+step));renderQuizQuestion();}
+        function jumpQuiz(i){quizIndex=i;renderQuizQuestion();}
+        function confirmFinishExam(){const unanswered=quizQuestions.length-Object.keys(quizAnswers).length;if(unanswered&& !confirm('এখনো '+bnNum(unanswered)+'টি প্রশ্নের উত্তর দেওয়া হয়নি। তবুও জমা দেবে?'))return;finishMockTest(false);}
+        function finishMockTest(auto=false){
+          if(!quizQuestions.length)return;clearInterval(quizClock);
+          const correct=quizQuestions.filter((q,i)=>quizAnswers[i]===q.a).length;
+          const percent=Math.round(correct/quizQuestions.length*100);
+          const record={date:new Date().toISOString(),correct,total:quizQuestions.length,percent,subject:document.getElementById('quizSubject').value,answers:quizQuestions.map((q,i)=>({q:q.q,selected:quizAnswers[i]??null,correct:q.a,explanation:q.e,options:q.o}))};
+          const history=JSON.parse(localStorage.getItem('bba_exam_history')||'[]');history.unshift(record);localStorage.setItem('bba_exam_history',JSON.stringify(history.slice(0,30)));
+          const missed=record.answers.filter(x=>x.selected!==x.correct);
+          document.getElementById('quizWorkspace').classList.add('hidden');
+          const result=document.getElementById('examResult');result.classList.remove('hidden');
+          result.innerHTML='<div class="flex flex-wrap justify-between gap-3"><div><span class="text-xs font-bold text-indigo-600">EXAM REPORT</span><h2 class="text-2xl font-extrabold mt-1">পরীক্ষার ফলাফল</h2><p class="text-sm text-slate-500 mt-1">'+(auto?'সময় শেষ হয়েছে। ':'')+'সময়: '+bnNum(Math.ceil((Date.now()-quizStartedAt)/60000))+' মিনিট</p></div><div class="text-right"><div class="text-4xl font-black '+(percent>=80?'text-emerald-600':percent>=50?'text-amber-600':'text-rose-600')+'">'+bnNum(percent)+'%</div><div class="text-xs text-slate-500">স্কোর</div></div></div><div class="grid grid-cols-3 gap-3 my-5"><div class="rounded-xl bg-emerald-50 dark:bg-emerald-900/20 p-3 text-center"><b class="text-xl text-emerald-700">'+bnNum(correct)+'</b><div class="text-xs">সঠিক</div></div><div class="rounded-xl bg-rose-50 dark:bg-rose-900/20 p-3 text-center"><b class="text-xl text-rose-700">'+bnNum(missed.length)+'</b><div class="text-xs">ভুল/বাদ</div></div><div class="rounded-xl bg-indigo-50 dark:bg-indigo-900/20 p-3 text-center"><b class="text-xl text-indigo-700">'+bnNum(record.total)+'</b><div class="text-xs">মোট প্রশ্ন</div></div></div><p class="font-bold mb-3">'+(percent>=80?'চমৎকার! তোমার প্রস্তুতি ভালো।':percent>=50?'ভালো শুরু—ভুলগুলো আবার অনুশীলন করো।':'আরও অনুশীলন প্রয়োজন। উত্তরগুলোর ব্যাখ্যা পড়ে নাও।')+'</p><div class="space-y-3">'+record.answers.map((x,i)=>'<article class="rounded-xl border border-slate-200 dark:border-slate-700 p-4"><div class="font-bold text-sm">'+bnNum(i+1)+'. '+x.q+'</div><div class="text-sm mt-2 '+(x.selected===x.correct?'text-emerald-700 dark:text-emerald-300':'text-rose-700 dark:text-rose-300')+'">তোমার উত্তর: '+(x.selected===null?'উত্তর দাওনি':x.options[x.selected])+'</div><div class="text-sm text-emerald-700 dark:text-emerald-300 mt-1">সঠিক উত্তর: '+x.options[x.correct]+'</div><p class="text-sm text-slate-600 dark:text-slate-300 mt-2">'+x.explanation+'</p></article>').join('')+'</div><div class="flex flex-wrap gap-2 mt-5"><button onclick="startMockTest()" class="rounded-xl bg-indigo-600 text-white px-4 py-2.5 text-sm font-bold">আবার পরীক্ষা দাও</button><button onclick="window.print()" class="rounded-xl border px-4 py-2.5 text-sm font-semibold">রিপোর্ট প্রিন্ট</button><button onclick="document.getElementById(\'examResult\').classList.add(\'hidden\')" class="rounded-xl border px-4 py-2.5 text-sm font-semibold">বন্ধ করো</button></div>';
+          quizQuestions=[];updateLearningStats();result.scrollIntoView({behavior:'smooth',block:'start'});
+        }
+        function showExamHistory(){
+          const h=JSON.parse(localStorage.getItem('bba_exam_history')||'[]');const box=document.getElementById('examHistory');box.classList.toggle('hidden');
+          if(!box.classList.contains('hidden')){box.innerHTML='<h3 class="font-extrabold text-lg mb-3">সাম্প্রতিক পরীক্ষার ফলাফল</h3>'+(h.length?h.map((x,i)=>'<div class="flex justify-between gap-3 border-b border-slate-100 dark:border-slate-700 py-3 text-sm"><div><b>'+bnNum(i+1)+'. '+(x.subject==='all'?'Combined Test':x.subject)+'</b><div class="text-xs text-slate-500">'+new Date(x.date).toLocaleString('bn-BD')+' • '+bnNum(x.correct)+'/'+bnNum(x.total)+'</div></div><b class="text-indigo-600">'+bnNum(x.percent)+'%</b></div>').join(''):'<p class="text-sm text-slate-500">এখনো কোনো পরীক্ষা দেওয়া হয়নি।</p>');box.scrollIntoView({behavior:'smooth',block:'nearest'});}
+        }
+
         // App State
         let currentSubject = 'all';
         let showBookmarksOnly = false;
@@ -1023,6 +1162,7 @@
             initTheme();
             renderQuestions();
             updateProgress();
+            updateLearningStats();
             
             // Show/hide scroll to top button
             window.addEventListener('scroll', () => {
@@ -1280,6 +1420,7 @@
             
             document.getElementById('progressText').innerText = `${toBn(done)} / ${toBn(total)}টি সম্পন্ন (${toBn(percent)}%)`;
             document.getElementById('progressBar').style.width = `${percent}%`;
+            if(typeof updateLearningStats === 'function') updateLearningStats();
         }
 
 
