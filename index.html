@@ -174,7 +174,7 @@
                     <span class="rounded-xl bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 px-3 py-2 text-xs font-bold"><i class="fa-solid fa-stopwatch mr-1"></i> Timed Mock Test</span>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
-                    <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">বিষয়<select id="quizSubject" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm"><option value="all">সব বিষয়</option><option value="marketing">মার্কেটিং</option><option value="management">ব্যবস্থাপনা</option></select></label>
+                    <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">বিষয়<select id="quizSubject" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm"><option value="all">সব বিষয়</option><option value="marketing">মার্কেটিং</option><option value="management">ব্যবস্থাপনা</option><option value="history">ইতিহাস</option><option value="ict">আইসিটি</option><option value="business">ব্যবসায় পরিচিতি</option></select></label>
                     <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">প্রশ্ন সংখ্যা<select id="quizCount" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm"><option value="10">১০টি প্রশ্ন</option><option value="20" selected>২০টি প্রশ্ন</option><option value="30">৩০টি প্রশ্ন</option></select></label>
                     <label class="text-xs font-semibold text-slate-600 dark:text-slate-300">সময়<select id="quizDuration" class="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 p-2.5 text-sm"><option value="10">১০ মিনিট</option><option value="15" selected>১৫ মিনিট</option><option value="25">২৫ মিনিট</option></select></label>
                 </div>
@@ -1083,7 +1083,19 @@
           {s:'management',q:'গণতান্ত্রিক নেতৃত্বে সাধারণত কী হয়?',o:['কর্মীদের মতামত ও অংশগ্রহণকে গুরুত্ব দেওয়া','সব সিদ্ধান্ত গোপন রাখা','কোনো যোগাযোগ না রাখা','শুধু শাস্তি দেওয়া'],a:0,e:'গণতান্ত্রিক নেতা সিদ্ধান্তে দলের মতামত ও অংশগ্রহণকে গুরুত্ব দেন।'},
           {s:'management',q:'ব্যবস্থাপনার দক্ষতা (Efficiency) বলতে কী বোঝায়?',o:['সম্পদের অপচয় বাড়ানো','কম সম্পদে যথাযথভাবে কাজ সম্পন্ন করা','লক্ষ্য বাদ দেওয়া','কাজ বিলম্বিত করা'],a:1,e:'Efficiency হলো সম্পদের অপচয় কমিয়ে কাজ করা; effectiveness হলো সঠিক লক্ষ্য অর্জন।'},
           {s:'management',q:'কর্তৃত্ব অর্পণ (Delegation)-এর অর্থ কী?',o:['কাজ ও প্রয়োজনীয় ক্ষমতা অধস্তনকে দেওয়া','সব কাজ নিজে করা','দায়িত্ব অস্বীকার','প্রতিষ্ঠান বন্ধ করা'],a:0,e:'Delegation-এ অধস্তনকে নির্দিষ্ট কাজ ও তা সম্পাদনের প্রয়োজনীয় কর্তৃত্ব দেওয়া হয়।'},
-          {s:'management',q:'সমন্বয় (Coordination) কেন প্রয়োজন?',o:['বিভাগগুলোর কাজের সামঞ্জস্য আনতে','বিভাগের মধ্যে দ্বন্দ্ব বাড়াতে','তথ্য গোপন করতে','লক্ষ্য বাদ দিতে'],a:0,e:'সমন্বয় বিভিন্ন ব্যক্তি ও বিভাগের প্রচেষ্টাকে অভিন্ন লক্ষ্যের দিকে পরিচালিত করে।'}
+          {s:'management',q:'সমন্বয় (Coordination) কেন প্রয়োজন?',o:['বিভাগগুলোর কাজের সামঞ্জস্য আনতে','বিভাগের মধ্যে দ্বন্দ্ব বাড়াতে','তথ্য গোপন করতে','লক্ষ্য বাদ দিতে'],a:0,e:'সমন্বয় বিভিন্ন ব্যক্তি ও বিভাগের প্রচেষ্টাকে অভিন্ন লক্ষ্যের দিকে পরিচালিত করে।'},
+          {s:'history',q:'প্রাচীন বাংলার জনপদ বলতে কী বোঝায়?',o:['প্রাচীন ভৌগোলিক-রাজনৈতিক অঞ্চল','আধুনিক শিল্পাঞ্চল','শুধু নদীবন্দর','বিদেশি উপনিবেশ'],a:0,e:'প্রাচীন বাংলায় বিভিন্ন ভৌগোলিক ও রাজনৈতিক অঞ্চলকে জনপদ বলা হতো।'},
+          {s:'history',q:'বঙ্গভঙ্গ কার্যকর হয় কত সালে?',o:['১৯০১','১৯০৫','১৯১১','১৯৪৭'],a:1,e:'লর্ড কার্জনের সময়ে ১৯০৫ সালে বঙ্গভঙ্গ কার্যকর হয়।'},
+          {s:'history',q:'বক্সারের যুদ্ধ সংঘটিত হয় কত সালে?',o:['১৭৫৭','১৭৬৪','১৭৭২','১৮৫৭'],a:1,e:'১৭৬৪ সালের বক্সারের যুদ্ধে ইস্ট ইন্ডিয়া কোম্পানি বিজয়ী হয়।'},
+          {s:'history',q:'বঙ্গভঙ্গ রদ হয় কত সালে?',o:['১৯০৯','১৯১১','১৯১৯','১৯৪৭'],a:1,e:'তীব্র আন্দোলনের পর ১৯১১ সালে বঙ্গভঙ্গ রদ ঘোষণা করা হয়।'},
+          {s:'ict',q:'কাঁচা উপাত্তকে প্রক্রিয়াজাত করে অর্থবহ রূপ দিলে কী পাওয়া যায়?',o:['ডেটা','ইনফরমেশন','হার্ডওয়্যার','নেটওয়ার্ক'],a:1,e:'প্রক্রিয়াজাত ও অর্থবহ ডেটাকে ইনফরমেশন বা তথ্য বলা হয়।'},
+          {s:'ict',q:'কম্পিউটারের কোন অংশ নির্দেশনা প্রক্রিয়াকরণ করে?',o:['CPU','মনিটর','কীবোর্ড','প্রিন্টার'],a:0,e:'CPU বা Central Processing Unit নির্দেশনা নির্বাহ ও প্রক্রিয়াকরণ করে।'},
+          {s:'ict',q:'শিক্ষায় ICT ব্যবহারের একটি সুবিধা কী?',o:['তথ্যপ্রাপ্তি সীমিত করা','দূরশিক্ষা ও দ্রুত তথ্যপ্রাপ্তি','যোগাযোগ বন্ধ করা','শিক্ষাসামগ্রী মুছে ফেলা'],a:1,e:'ICT অনলাইন ক্লাস, ডিজিটাল কনটেন্ট ও দূরশিক্ষা সহজ করে।'},
+          {s:'ict',q:'কম্পিউটারের স্থায়ী নির্দেশনা সংরক্ষণে কোন মেমোরি ব্যবহৃত হয়?',o:['RAM','ROM','Cache only','Register'],a:1,e:'ROM-এ সাধারণত স্থায়ী বা firmware ধরনের নির্দেশনা সংরক্ষিত থাকে।'},
+          {s:'business',q:'একমালিকানা ব্যবসায়ের মালিক কে?',o:['সরকার','একজন ব্যক্তি','শেয়ারহোল্ডারদের দল','সমবায় সমিতি'],a:1,e:'একমালিকানা ব্যবসায়ে একজন ব্যক্তি মালিকানা ও নিয়ন্ত্রণ করেন।'},
+          {s:'business',q:'শিল্পের প্রধান কাজ কী?',o:['পণ্য উৎপাদন বা প্রক্রিয়াজাতকরণ','শুধু বিজ্ঞাপন','শুধু ঋণ প্রদান','শুধু হিসাব নিরীক্ষা'],a:0,e:'শিল্পের মাধ্যমে কাঁচামালকে প্রক্রিয়াজাত করে পণ্য উৎপাদন করা হয়।'},
+          {s:'business',q:'ব্যবসায়ের একটি মৌলিক উদ্দেশ্য কোনটি?',o:['গ্রাহকের প্রয়োজন পূরণ ও মুনাফা অর্জন','সম্পদ অপচয়','চাহিদা উপেক্ষা','লেনদেন বন্ধ'],a:0,e:'ব্যবসা গ্রাহকের প্রয়োজন পূরণ করে এবং ঝুঁকি বিবেচনায় মুনাফা অর্জনের চেষ্টা করে।'},
+          {s:'business',q:'ব্যবসায়ের ঝুঁকি বলতে কী বোঝায়?',o:['লাভ নিশ্চিত হওয়া','অনিশ্চয়তার কারণে ক্ষতির সম্ভাবনা','নির্দিষ্ট বেতন','নিশ্চিত বিক্রয়'],a:1,e:'ভবিষ্যৎ অনিশ্চয়তার কারণে সম্ভাব্য ক্ষতি বা প্রত্যাশিত ফল না পাওয়ার আশঙ্কাই ঝুঁকি।'}
         ];
         let quizQuestions=[], quizAnswers={}, quizIndex=0, quizSeconds=0, quizClock=null, quizStartedAt=null;
         const examHistory = JSON.parse(localStorage.getItem('bba_exam_history') || '[]');
