@@ -1,11 +1,16 @@
 # BBA Study Portal
 
+A polished, mobile-friendly Bengali BBA learning and exam-preparation portal. The current study bank contains **36 question-and-answer entries** across five subjects, including expanded Marketing and Management sections.
+
 A responsive Bengali study portal containing question-and-answer notes for the first five subjects.
 
 ## Features
 
+- Premium responsive interface with a gradient learning dashboard and refined question cards.
 - Search questions and answers, filter by subject, and bookmark important topics.
-- Track completed questions locally in the browser.
+- Expanded Marketing (13 questions) and Management (9 questions) banks with structured, exam-oriented explanations, examples, comparison tables, and key concepts.
+- Track completed questions locally in the browser, with live overall progress.
+- Mobile-friendly reading controls, accordion navigation, and print-ready answer layouts.
 - Light/dark theme, adjustable text size, copy and print/PDF.
 - Bengali text-to-speech with a server-side Google Cloud Chirp 3 HD neural voice when deployed on Netlify.
 - Browser Bengali TTS fallback only when a Bengali voice is installed; the app no longer silently selects an English voice.
