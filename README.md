@@ -55,3 +55,14 @@ Open `index.html` in a modern browser for the browser fallback. To test the clou
 ## Privacy and security
 
 The Google API key is read only from the Netlify server environment and must never be committed to the repository. Study completion, bookmarks, and theme preferences are stored in the browser's local storage on the current device. Text sent to the neural voice endpoint is processed by Google Cloud Text-to-Speech to generate audio.
+
+
+## Assignment 01 — Finance & Micro Economics
+
+A dedicated, mobile-friendly solution guide has been added for the supplied Padma Government College Assignment-01:
+
+- **Principles of Finance:** all 12 questions, including compound interest, present value, annuities, loan amortization, deferred pension, car-offer comparison, expected return, risk, CML, stock comparison, EIR and Rules 72/69.
+- **Micro Economics:** all 7 Bengali questions with definitions, explanations, examples, demand/supply schedules, and PPC/demand/supply diagrams.
+- Includes print/PDF support, responsive layout, and light/dark theme.
+
+[Open Assignment 01 solutions](assignments/assignment-01-finance-microeconomics.html)
